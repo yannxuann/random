@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="content"></div>
+		<button onclick="getGenerateSSQ(1)">随机1注</button>
+		<button onclick="getGenerateSSQ(5)">随机5注</button>
+		<button onclick="getGenerateSSQ(10)">随机10注</button>
+	</body>
+	<script>
+		function generateSSQ() {
+			// 生成红球（1-33选6个不重复）
+			const redBalls = Array.from({
+				length: 33
+			}, (_, i) => i + 1);
+			for (let i = redBalls.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[redBalls[i], redBalls[j]] = [redBalls[j], redBalls[i]]; // Fisher-Yates 洗牌算法
+			}
+			const selectedRed = redBalls.slice(0, 6).sort((a, b) => a - b);
+
+			// 生成蓝球（1-16选1个）
+			const blueBall = Math.floor(Math.random() * 16) + 1;
+
+			return {
+				red: selectedRed,
+
+
+				blue: blueBall,
+				toString: function() {
+					const formattedRed = this.red.map(n => n.toString().padStart(2, '0')).join(' ');
+					const formattedBlue = this.blue.toString().padStart(2, '0');
+					return `${formattedRed}  + ${formattedBlue}`;
+				}
+			};
+		}
+
+		function getGenerateSSQ(num) {
+			let str = ''
+			for (let i = 0; i < num; i++) {
+				const res = generateSSQ().toString()
+				str = str + res + '<br/>'
+			}
+
+			const content = document.getElementById('content')
+			content.innerHTML = str
+		}
+
+		// 使用示例
+		const ssq = generateSSQ();
+		console.log(ssq.toString());
+		// 示例输出：红球：03 08 11 14 25 28 | 蓝球：12
+		console.log(ssq); // 查看原始数据格式
+	</script>
+</html>
